@@ -13,6 +13,11 @@ import (
 	"os"
 )
 
+type Cfg interface {
+	WriteConfig() error
+	GetValue(key string) interface{}
+}
+
 type ConfigWriter struct {
 	config
 }
@@ -34,7 +39,7 @@ var (
 	defaultCfg = NewConfig(defaultConfigPath)
 )
 
-func NewConfig(filepath string) *Config {
+func NewConfig(filepath string) Cfg {
 	return &Config{
 		filePath:     filepath,
 		ConfigReader: NewConfigReader(defaultConfigPath),
@@ -100,5 +105,9 @@ func (cfg *Config) GetValue(key string) interface{} {
 }
 
 func Get(key string) interface{} {
-	return defaultCfg.Get(key)
+	return defaultCfg.GetValue(key)
+}
+
+func DefaultConfig() Cfg {
+	return defaultCfg
 }

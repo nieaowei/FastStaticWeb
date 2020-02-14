@@ -16,6 +16,7 @@ import (
 )
 
 type Mgr struct {
+	config       config.Cfg
 	server       *server.Instance
 	configWriter config.ConfigWriter
 	ctx          context.Context
