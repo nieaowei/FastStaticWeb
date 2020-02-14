@@ -1,0 +1,11 @@
+[webconfig]
+  enable = true
+
+[web]
+  root = "/"
+  [web.htts]
+    enable = false
+    filepath = "/css"
+  [web.static]
+    enable = false
+    path = "/"

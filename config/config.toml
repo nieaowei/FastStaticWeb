@@ -1,0 +1,10 @@
+[webconfig]
+    enable = true #是否启用网页配置
+[https]
+    enable = false #是否启用
+    filepath = "/"
+[web]
+    root = "/" #网站根目录
+    [static] #专门的静态文件路径
+        enable = false
+        path = "/"
