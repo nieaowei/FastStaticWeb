@@ -2,10 +2,10 @@
   enable = true
 
 [web]
-  root = "/"
-  [web.htts]
+  root = ""
+  [web.https]
     enable = false
-    filepath = "/css"
+    filepath = ""
   [web.static]
     enable = false
-    path = "/"
+    path = ""

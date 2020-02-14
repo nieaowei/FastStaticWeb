@@ -14,48 +14,73 @@ import (
 )
 
 type ConfigWriter struct {
+	config
+}
+
+type ConfigReader struct {
+	*gcfg.Config
+}
+
+type Config struct {
 	filePath string
-	*config
+	*ConfigReader
+	*ConfigWriter
+	mux chan byte
 }
 
 const defaultConfigPath = "config/config.toml"
 
 var (
-	defaultCfgRead = gcfg.Instance(defaultConfigPath)
-	defaultCfgWriter *ConfigWriter = &ConfigWriter{}
+	defaultCfg = NewConfig(defaultConfigPath)
 )
 
+func NewConfig(filepath string) *Config {
+	return &Config{
+		filePath:     filepath,
+		ConfigReader: NewConfigReader(defaultConfigPath),
+		ConfigWriter: NewConfigWriter(defaultConfigPath),
+		mux:          make(chan byte, 1),
+	}
+}
+
 func init() {
-	defaultCfgWriter.SetFilePath(defaultConfigPath).
-		SetWebCfg((&WebConfig{}).
-			SetRoot("/").
-			SetHttps(&HttpsConfig{
-				Enable:   false,
-				Filepath: "",
-			}).
-			SetStatic(&WebStaticConfiig{
-				Enable: false,
-				Path:   "",
-			})).
-		SetWebconfigCfg(&WebconfigConfig{Enable:false})
+
 }
 
-func WriteDefaultConfig()(error) {
-	return defaultCfgWriter.WriteConfig()
+func WriteDefaultConfig() error {
+	return defaultCfg.WriteConfig()
 }
 
-func (cfgw *ConfigWriter)WriteConfig()( error) {
-	file, err := os.OpenFile(cfgw.filePath, os.O_WRONLY, os.ModePerm)
+func NewConfigReader(filepath string) *ConfigReader {
+	return &ConfigReader{Config: gcfg.Instance(filepath)}
+}
+
+func NewConfigWriter(filepath string) *ConfigWriter {
+	return &ConfigWriter{
+		config: config{},
+	}
+}
+
+func (cfgw *Config) WriteConfig() error {
+	cfgw.mux <- 1
+	file, err := os.OpenFile(cfgw.filePath, os.O_CREATE|os.O_WRONLY, os.ModePerm)
 	if err != nil {
 		fmt.Println("read config file")
 		return err
 	}
 	defer func() {
+		defer func() {
+			r := recover()
+			if r != nil {
+				<-cfgw.mux
+			}
+		}()
 		err := file.Close()
 		if err != nil {
 			fmt.Println()
 			return
 		}
+		<-cfgw.mux
 	}()
 	encoder := toml.NewEncoder(file)
 	err = encoder.Encode(cfgw.config)
@@ -63,11 +88,17 @@ func (cfgw *ConfigWriter)WriteConfig()( error) {
 		fmt.Println(err)
 		return err
 	}
+
 	return nil
 }
 
-func (cfgw *ConfigWriter)SetFilePath(path string) (*ConfigWriter) {
-	cfgw.filePath=path
-	return cfgw
+func (cfg *Config) GetValue(key string) interface{} {
+	cfg.mux <- 1
+	res := cfg.Get(key)
+	<-cfg.mux
+	return res
 }
 
+func Get(key string) interface{} {
+	return defaultCfg.Get(key)
+}

@@ -7,52 +7,71 @@
 package config
 
 type config struct {
-	Webconfig *WebconfigConfig `toml:"webconfig"`
-	Web *WebConfig	`toml:"web"`
-
+	Webconfig WebconfigConfig `toml:"webconfig"`
+	Web       WebConfig       `toml:"web"`
 }
 
 type WebconfigConfig struct {
-	Enable bool	`toml:"enable"`
+	Enable bool `toml:"enable"`
 }
 
 type HttpsConfig struct {
-	Enable bool	`toml:"enable"`
+	Enable   bool   `toml:"enable"`
 	Filepath string `toml:"filepath"`
 }
 
 type WebConfig struct {
-	Root string	`toml:"root"`
-	Https *HttpsConfig	`toml:"htts"`
-	Static *WebStaticConfiig `toml:"static"`
+	Root   string           `toml:"root"`
+	Https  HttpsConfig      `toml:"https"`
+	Static WebStaticConfiig `toml:"static"`
 }
 
 type WebStaticConfiig struct {
-	Enable bool	`toml:"enable"`
-	Path string `toml:"path"`
+	Enable bool   `toml:"enable"`
+	Path   string `toml:"path"`
 }
 
-func (cfg *config)SetWebCfg(config *WebConfig) (*config) {
+func (cfg *config) SetWebCfg(config WebConfig) *config {
 	cfg.Web = config
 	return cfg
 }
 
-func (cfg *config)SetWebconfigCfg(config *WebconfigConfig) (*config) {
+func (cfg *config) SetWebconfigCfg(config WebconfigConfig) *config {
 	cfg.Webconfig = config
 	return cfg
 }
 
-func (cfg *WebConfig)SetRoot(path string) (*WebConfig) {
-	cfg.Root=path
+func (cfg *config) SetHttps(config HttpsConfig) *config {
+	cfg.Web.Https = config
 	return cfg
 }
 
-func (cfg *WebConfig)SetHttps(config *HttpsConfig) (*WebConfig) {
-	cfg.Https=config
+func (cfg *config) SetStatic(config WebStaticConfiig) *config {
+	cfg.Web.Static = config
 	return cfg
 }
 
-func (cfg *WebConfig)SetStatic(config *WebStaticConfiig) (*WebConfig) {
-	cfg.Static=config
+func (cfg *config) SetWebCfgRoot(path string) *config {
+	cfg.Web.Root = path
+	return cfg
+}
+
+func (cfg *config) SetHttpsEnable(ok bool) *config {
+	cfg.Web.Https.Enable = ok
+	return cfg
+}
+
+func (cfg *config) SetHttpsFilePath(path string) *config {
+	cfg.Web.Https.Filepath = path
+	return cfg
+}
+
+func (cfg *config) SetStaticEnable(ok bool) *config {
+	cfg.Web.Static.Enable = ok
+	return cfg
+}
+
+func (cfg *config) SetStaticPath(path string) *config {
+	cfg.Web.Static.Path = path
 	return cfg
 }

@@ -5,9 +5,14 @@
     <title>Config</title>
 </head>
 <body>
-<form method="post" enctype="multipart/form-data">
-    <input name="enable" type="text">
-    <input accept=".txt" type="file" id="upload_file_id" name="file"/>
+<form method="post" enctype="multipart/form-data" name="webconfig">
+    <input name="enable" type="checkbox">
+    <form name="https" enctype="multipart/form-data">
+        <input name="enable" type="text">
+        <input name="filepath" type="text">
+        <input accept=".txt" type="file" id="upload_file_id" name="file"/>
+        <input type="submit" >
+    </form>
     <input type="submit" >
 </form>
 
