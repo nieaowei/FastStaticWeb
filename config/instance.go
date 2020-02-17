@@ -1,7 +1,7 @@
 /*******************************************************
- *  File        :   config.go
+ *  File        :   instance.go
  *  Author      :   nieaowei
- *  Date        :   2020/2/14 6:10 下午
+ *  Date        :   2020/2/17 5:30 上午
  *  Notes       :
  *******************************************************/
 package config
@@ -12,11 +12,6 @@ import (
 	"github.com/gogf/gf/os/gcfg"
 	"os"
 )
-
-type Cfg interface {
-	WriteConfig() error
-	GetValue(key string) interface{}
-}
 
 type ConfigWriter struct {
 	config
@@ -33,27 +28,21 @@ type Config struct {
 	mux chan byte
 }
 
-const defaultConfigPath = "config/config.toml"
+func (cfg *Config) GetWriter() interface{} {
+	return cfg.ConfigWriter
+}
 
-var (
-	defaultCfg = NewConfig(defaultConfigPath)
-)
-
-func NewConfig(filepath string) Cfg {
+func NewInstance(filepath string) Cfg {
 	return &Config{
 		filePath:     filepath,
-		ConfigReader: NewConfigReader(defaultConfigPath),
-		ConfigWriter: NewConfigWriter(defaultConfigPath),
+		ConfigReader: NewConfigReader(filepath),
+		ConfigWriter: NewConfigWriter(filepath),
 		mux:          make(chan byte, 1),
 	}
 }
 
 func init() {
 
-}
-
-func WriteDefaultConfig() error {
-	return defaultCfg.WriteConfig()
 }
 
 func NewConfigReader(filepath string) *ConfigReader {
@@ -88,12 +77,11 @@ func (cfgw *Config) WriteConfig() error {
 		<-cfgw.mux
 	}()
 	encoder := toml.NewEncoder(file)
-	err = encoder.Encode(cfgw.config)
+	err = encoder.Encode(cfgw.ConfigWriter)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-
 	return nil
 }
 
@@ -104,10 +92,9 @@ func (cfg *Config) GetValue(key string) interface{} {
 	return res
 }
 
-func Get(key string) interface{} {
-	return defaultCfg.GetValue(key)
-}
-
-func DefaultConfig() Cfg {
-	return defaultCfg
+func (cfg *Config) GetStrings(key string) []string {
+	cfg.mux <- 1
+	res := cfg.ConfigReader.GetStrings(key)
+	<-cfg.mux
+	return res
 }

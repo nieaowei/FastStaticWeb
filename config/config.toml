@@ -1,11 +1,17 @@
+# 部分配置不会实时生效，但是修改后，服务器会平滑重启
 [webconfig]
   enable = true #是否启用网页配置模式
 
 [web]
   root = "/Users/nieaowei/Desktop/blog/public" # 网站根目录
   [web.https]
-    enable = false
-    filepath = "" # 基于root的路径
+    enable = true
+    filepath = "/Users/nieaowei/Desktop/FastStaticWeb/tls" # 证书文件路径
   [web.static]
     enable = false # 是否启用单独的静态资源文件夹
     path = ""
+
+[redirect] # 重定向过滤
+    enable = true
+    keywords = ['常德','上海','本机'] # 过滤关键词
+    reurl = "https://nekilc.com" # 重定向url

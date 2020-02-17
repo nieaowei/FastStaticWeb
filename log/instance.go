@@ -1,13 +1,13 @@
 /*******************************************************
- *  File        :   main.go
+ *  File        :   instance.go
  *  Author      :   nieaowei
- *  Date        :   2020/2/14 6:09 下午
+ *  Date        :   2020/2/17 6:05 上午
  *  Notes       :
  *******************************************************/
-package main
+package log
 
-import "FastStaticWeb/manager"
+import "github.com/gogf/gf/os/glog"
 
-func main() {
-	manager.Start()
-}
+var (
+	DefaultLog glog.Logger
+)
