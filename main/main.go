@@ -8,10 +8,10 @@ package main
 
 import (
 	"FastStaticWeb/config"
-	"FastStaticWeb/faststaticweb"
+	"FastStaticWeb/server"
 )
 
 func main() {
-	inst := faststaticweb.NewInstance(config.DefaultConfig())
+	inst := server.NewInstance(config.DefaultConfig())
 	inst.Start().StartDaemon()
 }

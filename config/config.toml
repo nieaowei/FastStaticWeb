@@ -1,17 +1,34 @@
 # 部分配置不会实时生效，但是修改后，服务器会平滑重启
 [webconfig]
-  enable = true #是否启用网页配置模式
+    enable = true #是否启用网页配置模式
 
 [web]
-  root = "/Users/nieaowei/Desktop/blog/public" # 网站根目录
-  [web.https]
-    enable = true
-    filepath = "/Users/nieaowei/Desktop/FastStaticWeb/tls" # 证书文件路径
-  [web.static]
-    enable = false # 是否启用单独的静态资源文件夹
-    path = ""
+    root = "/blog/public" # 网站根目录
+    [web.https]
+        enable = true
+        filepath = "/blog/tls" # 证书文件路径
+    [web.static]
+        enable = false # 是否启用单独的静态资源文件夹
+        path = ""
 
-[redirect] # 重定向过滤
+[redirect] # 重定向过滤,可以将指定区域或运营商用户重定向到指定网站（比如cdn）
     enable = true
-    keywords = ['常德','上海','本机'] # 过滤关键词
+    keywords = ['常德 电信'] # 过滤关键词
     reurl = "https://nekilc.com" # 重定向url
+############
+[client] # 客户端参数
+    root = "" # 本地静态web地址
+    exce = "hexo" # 静态web生成器路径
+    params = ['clean','g'] # 执行参数
+    [client.remote]
+        enable = false
+        method = "sftp" # 推送方式，暂时只支持sftp
+        addr = ":" # 远程地址
+        user = "" # 用户名
+        password = "" # 密码
+        [client.remote.timer] # 启动守护进程，定时推送
+            enable = false
+            timeduration = "" # 时间间隔
+        [client.remote.watcher] # 监控推送
+            enable = false
+            dir = "" # 监控目录
