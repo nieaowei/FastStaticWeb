@@ -13,7 +13,7 @@
 
 [redirect] # 重定向过滤,可以将指定区域或运营商用户重定向到指定网站（比如cdn）
     enable = true
-    keywords = ['常德 电信'] # 过滤关键词
+    keywords = ['常德市 电信'] # 过滤关键词
     reurl = "https://nekilc.com" # 重定向url
 ############
 [client] # 客户端参数

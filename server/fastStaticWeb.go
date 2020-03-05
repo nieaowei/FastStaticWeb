@@ -95,18 +95,17 @@ func (s *Instance) Start() *Instance {
 }
 
 func (s *Instance) StartDaemon() {
-	s.controlles[s.httpServer].Wait(func() {
+	go s.controlles[s.httpServer].Wait(func() {
 		fmt.Println("http server exit.")
 	})
-	s.controlles[s.httpsServer].Wait(func() {
+	go s.controlles[s.httpsServer].Wait(func() {
 		fmt.Println("https server exit.")
 	})
-	for {
-		option := ' '
-		fmt.Scan("%c", &option)
-		if option == 'q' {
-			return
-		}
+	fmt.Println("wait for opration")
+	option := ' '
+	fmt.Scanf("%c", &option)
+	if option == 'q' {
+		return
 	}
 }
 
